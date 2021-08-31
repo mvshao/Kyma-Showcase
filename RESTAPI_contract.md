@@ -22,7 +22,7 @@ The endpoint returns the following HTTP codes:
 
 ###Getting an image
 User clicks on an image\
-`GET v1/images/{id}/description`\
+`GET v1/images/{id}`\
 The endpoint returns the following JSON
 `[{ id: "#",
 title: "#",
@@ -33,4 +33,12 @@ status: "#"
 The endpoint returns the following HTTP codes:
 - 200 (if processing is done)
 - 202 (if processing is in progress)
+- 500 (if failed)
+
+###Updating an image
+Image details in database are being updated with values (e.g. recognized labels on photo) returned from GCP\
+`PUT v1/images/{id}`\
+The endpoint returns the following HTTP codes:
+- 200 (if processing is done)
+- 404 (if record does not exist)
 - 500 (if failed)

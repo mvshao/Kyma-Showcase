@@ -4,7 +4,7 @@ package model
 type Image struct {
 	ID      string `json:"id"`      //nanoID
 	Content string `json:"content"` //base64
-	GCP     string `json:"gcp"`     //returned JSON from gcp api
+	GCP     []string `json:"gcp"`     //returned JSON from gcp api
 	Status  bool   `json:"status"`  //defines if the image was already processed
 }
 

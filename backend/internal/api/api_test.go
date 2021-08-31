@@ -574,3 +574,41 @@ func TestDBPostHandler(t *testing.T) {
 
 	})
 }
+func TestUpdate(t *testing.T) {
+	t.Run("UPDATE TESTY", func(t *testing.T) {
+
+		//given
+		value := `{` +
+			`labels:[aaa,bbb]`+
+			`}`
+		returnedValue := `{` +
+			`"id":"` + fixedID + `",` +
+			`"content":"base64",` +
+			//`"gcp": "[{labels:[aaa,bbb]}, {mood:[ccc,ddd]}}",` +
+			`"status":false` +
+			`}`
+
+		req, err := http.NewRequest("PUT", "/v1/images/"+fixedID, bytes.NewBuffer([]byte(value)))
+		vars := map[string]string{
+			"id": fixedID,
+		}
+		req.Header.Set("Content-Type", "application/json")
+		req = mux.SetURLVars(req, vars)
+		assert.NoError(t, err)
+		recorder := httptest.NewRecorder()
+		dbManagerMock := mocks.DBManager{}
+		idMock := mocks.IdGenerator{}
+		idMock.On("NewID").Return(fixedID, nil)
+		testSubject := NewHandler(&dbManagerMock, &idMock)
+		dbManagerMock.On("GetFromDB", fixedID).Return(returnedValue, nil)
+
+		//when
+		testSubject.Update(recorder, req)
+
+		//then
+		dbManagerMock.AssertNumberOfCalls(t, "GetFromDB", 1)
+		//assert.Equal(t, value, recorder.Body.String())
+		assert.Equal(t, http.StatusOK, recorder.Code)
+	})
+
+}
